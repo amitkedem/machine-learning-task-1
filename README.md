@@ -3,7 +3,7 @@
 ## Overview
 This is the first task in the **Introduction to Machine Learning** course.  
 
-## 📂 Project Structure
+## Project Structure
 This repository contains the following files:
 
 1. **amit_results.xlsx** – The results of all training sessions.
