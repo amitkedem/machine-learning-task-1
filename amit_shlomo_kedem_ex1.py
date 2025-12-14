@@ -22,7 +22,7 @@ For more details about the data: https://scikit-learn.org/1.5/modules/generated/
 """
 
 '''
-[Amit] in this part we load the module we want to research, in this project - breast cancer.
+in this part we load the module we want to research, in this project - breast cancer.
 the data is being imported from sklearn.datasets (it contains various resarches (fires,brain cancer, false pregnancies))
 '''
 from sklearn.datasets import load_breast_cancer
@@ -40,7 +40,7 @@ from sklearn.model_selection import train_test_split
 X = my_data.data
 y = my_data.target
 '''
-[Amit] In this part we divide the data we recieved in the import section, we always divide it to
+In this part we divide the data we recieved in the import section, we always divide it to
 x train,test , y train,test. in the () we decide the test size (the most common is 0.2 for testing, and 0.8 for training)
 random state is used so we will recieve the same data structure (testing <-> training every time we run the notebook.
 we can choose every number but it's important to use the same number every time.
@@ -50,7 +50,7 @@ X_train, X_test, Y_train, Y_test = train_test_split(X,y, test_size=0.2,random_st
 """3. Libraries"""
 
 '''
-[Amit] This is the imports that we need to be able to train the module -
+This is the imports that we need to be able to train the module -
 we do not touch that part and it's forbidden to change it (Per Igor's request).
 '''
 !pip install mlflow
@@ -71,7 +71,7 @@ import pandas as pd
 """4. Define MLFlow experiment"""
 
 '''
-[Amit] MLFlow Is a tool to monitor and track the results of our training sessions.
+MLFlow Is a tool to monitor and track the results of our training sessions.
 you can see how it works in code block 5.1
 '''
 EXPERIMENT_NAME = "trees_hyperparam"
@@ -88,7 +88,7 @@ mlflow.set_experiment(EXPERIMENT_NAME)
 from sklearn.tree import DecisionTreeClassifier
 
 '''
-[Amit] This part defines the parameters we want to check.
+This part defines the parameters we want to check.
 since DecisionTreeClassifier expects variavbles (or None). we decided to give him 3 variables, based on params_x_list
 It's important to remember :
 x = Features about the current subject
@@ -98,7 +98,6 @@ in this project - the params we currently use are - max_depth (param_1), min_sam
 '''
 
 '''
-[Amit]
 param_1_list : here - we decide the depth of the tree that we want to check. (None == Unlimited)
 param_2_list : here we decide what is the mininum number of samples that a node must have before splitting into 2 childs.
                this param must be > 1 because you need at least 2 samples to be able to split them into 2 groups.
@@ -113,7 +112,7 @@ param_2_list = [2,3,4,5,6,7,8,9]
 param_3_list = ["gini","entropy"]
 
 '''
-[Amit] In this part - we create param_grid - which generates all possible combinations of parameters
+In this part - we create param_grid - which generates all possible combinations of parameters
 so if for example - if my data is :
 x = 1,2,3
 y = 3,4,5
@@ -128,14 +127,14 @@ and so on, untill all is covered.
 param_grid = list(itertools.product(param_1_list, param_2_list, param_3_list))
 
 '''
-[Amit] here - we actually start to train the model !
+here - we actually start to train the model !
 each time we take a differnt param from the grid, and iterate the entire grid ^
 '''
 for param_1, param_2, param_3 in param_grid:
     with mlflow.start_run():
 
         '''
-        [Amit] this part is perhaps the most imporant in the training session - Because altough we are able to train our model without it -
+        this part is perhaps the most imporant in the training session - Because altough we are able to train our model without it -
         if we dont log the params - we won't be able to tell which combination from the grid produced the best score !
         '''
         # Log parameters
@@ -144,7 +143,7 @@ for param_1, param_2, param_3 in param_grid:
         mlflow.log_param("param_2", param_2)
         mlflow.log_param("param_3", param_3)
         '''
-        [Amit] Here - the training begin !
+        Here - the training begin !
         the function DecisionTreeClassifier has a lot of options, and it is up to us to decide what to give it,
         since we took max_depth, min_samples_split and criterion - we will give it to the function and and each time provide a param from the loop.
         '''
@@ -153,7 +152,7 @@ for param_1, param_2, param_3 in param_grid:
         d_tree.fit(X_train, Y_train)
         pred = d_tree.predict(X_test)
         '''
-        [Amit] this part calculate the "scores" for the current iteration (in terms of accuracy, precision and recall)
+        this part calculate the "scores" for the current iteration (in terms of accuracy, precision and recall)
         * acc - Out of ALL predictions, how many did the model get right?
         * pre - How many “positive” predictions were actually correct?
         * rec - How many actual positive cases did we successfully catch?
@@ -173,7 +172,7 @@ for param_1, param_2, param_3 in param_grid:
         # f1_score
 
         '''
-        [Amit] Here - we simply log the results to the mlflow.
+        Here - we simply log the results to the mlflow.
         we do it in order to observe and look at the results the training session produced.
         we can see how it is logged in the next code block :)
         '''
@@ -192,7 +191,7 @@ for param_1, param_2, param_3 in param_grid:
 from sklearn.ensemble import RandomForestClassifier
 
 '''
-[Amit] Random forest works technically the same as decisionTree in terms of params.
+Random forest works technically the same as decisionTree in terms of params.
 it can recieve a lot of different params, I decided to take the most common 3 (from the docs)
 * param_1_list = n_estimators : Number of trees in the forest
 * param_2_list = max_depth : depth limit in each tree where None = Infinity
@@ -204,7 +203,7 @@ param_2_list = [1,2,3,4,5,6,7,8,9,None]
 param_3_list = ["sqrt", "log2"]
 
 '''
-[Amit] Same as Decision tree - we recieve a grid with all possible combinations.
+Same as Decision tree - we recieve a grid with all possible combinations.
 '''
 param_grid = list(itertools.product(param_1_list, param_2_list, param_3_list))
 
@@ -272,7 +271,7 @@ for param_1, param_2, param_3 in param_grid:
         mlflow.log_param("param_2", param_2)
         mlflow.log_param("param_3", param_3)
         '''
-        [Amit] This is a tricky part - param3 is being used from DecisionTree, so when we parse it - we can't simply say estimator=param3.
+        This is a tricky part - param3 is being used from DecisionTree, so when we parse it - we can't simply say estimator=param3.
         we need to tell AdaBoostClassifier that we are using a param from DecisionTree
         '''
         ada = AdaBoostClassifier(n_estimators=param_1, learning_rate=param_2, estimator=DecisionTreeClassifier(min_samples_split=param_3))
